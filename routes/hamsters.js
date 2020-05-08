@@ -1,26 +1,22 @@
-const {
-    Router
-} = require('express');
-const {
-    db
-} = require('./../firebase');
+const { Router } = require('express');
+const { auth, db } = require('./../firebase');
 
 const router = new Router();
 
+//GET all hamster data
 router.get('/', async(req, res) => {
 
-    let docs = [];
+    let hamsters = [];
 
-    //anropa firebase, hämta doc med :id
     let snapShot = await db.collection('hamsters').get();
     try{
-       snapShot.forEach(doc => {
-        console.log(doc.data())
-        console.log(docs.length)
-        docs.push(doc.data())
+       snapShot.forEach(hamster => {
+        console.log(hamster.data())
+        console.log(hamsters.length)
+        hamsters.push(hamster.data())
     })
     res.send(
-        docs
+        {hamsters: hamsters}
     );
   
     }
@@ -28,4 +24,47 @@ router.get('/', async(req, res) => {
        console.error(err)
    }
 })
+
+//GET data for random hamster
+router.get('/random', async(req, res) => {
+    let hamster = '';
+    let id = Math.floor(Math.random() * 40)
+    let snapShot = await db.collection('hamsters').where("id", "==", id).get();
+    try{
+        snapShot.forEach(element => {
+         console.log(element.data())
+         hamster = element.data()
+        
+     })
+     res.send(
+         {hamster: hamster}
+     ); 
+     }
+    catch(err){
+        console.error(err)
+    }
+})
+
+//GET data for a hamster with specific id
+router.get('/:id', async(req, res) => {
+    let hamster = '';
+    let snapShot = await db.collection('hamsters').where("id", "==", req.params.id*1).get();
+    try{
+        snapShot.forEach(element => {
+         console.log(element.data())
+         hamster = element.data()
+        
+     })
+     res.send(
+         {hamster: hamster}
+     ); 
+     }
+    catch(err){
+        console.error(err)
+    }
+})
+
+
+
+
 module.exports = router ; 

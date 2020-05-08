@@ -5,8 +5,6 @@ app.use('/assets', express.static('pictures'));
 app.use(express.json());
 
 //Require routes
-// const assetsRoute = require('./routes/assets');
-// app.use('/assets', assetsRoute);
 
 // const chartsRoute = require('./routes/charts');
 // app.use('/charts', chartsRoute);
