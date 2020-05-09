@@ -1,16 +1,6 @@
-const {
- Router
-} = require('express');
-const {
-    auth,
-    db
-} = require('./../firebase');
-const {
-    createId,
-    getTimestamp,
-    getRandomPlayer,
-    getPlayer
-} = require('../modules/gameFunctions');
+const { Router } = require('express');
+const { auth, db } = require('./../firebase');
+const { createId, getTimestamp, getRandomPlayer, getPlayer } = require('../modules/gameFunctions');
 
 const router = new Router();
 
