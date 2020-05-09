@@ -4,36 +4,34 @@ const { createId, getTimestamp, getRandomPlayer, getPlayer } = require('../modul
 
 const router = new Router();
 
-//Post a new hamaster war!
+//POST a new hamaster war!
 router.post('/', async (req, res) => {
 
-//give each match an id
+    //give each match an id
     let id = createId(4);
-    let playerOne ="";
-    let playerTwo ="";
+    let playerOne = "";
+    let playerTwo = "";
 
-    if (Object.keys(req.body).length === 0){ // if user does not choose any players, get two random players
+    if (Object.keys(req.body).length === 0) { // if user does not choose any players, get two random players
 
         playerOne = await getRandomPlayer();
-        playerTwo = await getRandomPlayer(); 
+        playerTwo = await getRandomPlayer();
         if (playerTwo === playerOne) {
             //if player two is same as player one, get another random player
             playerTwo = getRandomPlayer();
         }
-    }
-    
-    else { //else request sepcific players in JSON body using their id 1-40
+    } else { //else request sepcific players in JSON body using their id 1-40
         playerOne = await getPlayer(req.body.playerOne);
         playerTwo = await getPlayer(req.body.playerTwo);
     }
-    
+
 
     //Save the game in a 'games' collection
     await db.collection('games').doc(id).set({
         timeStamp: getTimestamp(), //function to get today's timestamp
         contestants: [playerOne, playerTwo]
     })
-    
+
     let game = await db.collection('games').doc(id).get();
     let gameData = game.data();
     console.log(gameData);
@@ -45,4 +43,24 @@ router.post('/', async (req, res) => {
 
 })
 
-module.exports = router ; 
+//GET all games data
+router.get('/', async (req, res) => {
+    let games = [];
+
+    let snapShot = await db.collection('games').get();
+    try{
+       snapShot.forEach(game => {
+        console.log(game.data())
+        games.push(game.data())
+    })
+    res.send(
+        {games: games}
+    );
+  
+    }
+   catch(err){
+       console.error(err)
+   }
+
+})
+module.exports = router;
