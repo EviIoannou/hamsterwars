@@ -9,8 +9,8 @@ app.use(express.json());
 // const chartsRoute = require('./routes/charts');
 // app.use('/charts', chartsRoute);
 
-// const gamesRoute = require('./routes/games');
-// app.use('/games', gamesRoute);
+const gamesRoute = require('./routes/games');
+app.use('/games', gamesRoute);
 
 const hamstersRoute = require('./routes/hamsters');
 app.use('/hamsters', hamstersRoute);

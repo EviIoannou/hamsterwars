@@ -12,7 +12,6 @@ router.get('/', async(req, res) => {
     try{
        snapShot.forEach(hamster => {
         console.log(hamster.data())
-        console.log(hamsters.length)
         hamsters.push(hamster.data())
     })
     res.send(
@@ -28,7 +27,7 @@ router.get('/', async(req, res) => {
 //GET data for random hamster
 router.get('/random', async(req, res) => {
     let hamster = '';
-    let id = Math.floor(Math.random() * 40)
+    let id = Math.floor(Math.random() * 40);
     let snapShot = await db.collection('hamsters').where("id", "==", id).get();
     try{
         snapShot.forEach(element => {
@@ -63,8 +62,6 @@ router.get('/:id', async(req, res) => {
         console.error(err)
     }
 })
-
-
 
 
 module.exports = router ; 
