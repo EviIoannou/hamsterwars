@@ -34,9 +34,9 @@ async function getPlayer(playerId){
 async function getRandomPlayer(){
     try{
     let id = Math.floor(Math.random() * 40);
-    let snapShotOne = await db.collection('hamsters').where("id", "==", id).get();
+    let snapShot = await db.collection('hamsters').where("id", "==", id).get();
     let player = '';
-    snapShotOne.forEach(element => {
+    snapShot.forEach(element => {
         console.log(element.data())
         player = element.data()
     })
@@ -50,6 +50,23 @@ async function getRandomPlayer(){
     
 }
 
+async function getWinner(array) { //will choose a random winner among contestants
+    try{
+       let winnerIndex = Math.floor(Math.random() * array.length);
+        let winnerId = array[winnerIndex].id;
+        let winner = '';
+        let snapShot = await db.collection('hamsters').where("id", "==", winnerId).get();
+        snapShot.forEach(element => {
+            // console.log('winner data: '+ element.data())
+            winner = element.data()
+        })
+        return winner; 
+    }
+    catch(err){
+        console.error(err)
+    }
+}
+
 function getTimestamp (){
     //get current date for the timestamp
     let today = new Date();
@@ -60,4 +77,4 @@ function getTimestamp (){
     let date = day + '/' + month + '/' + year;
     return date;
 }
-module.exports = { createId, getTimestamp, getRandomPlayer, getPlayer }
+module.exports = { createId, getTimestamp, getRandomPlayer, getPlayer, getWinner }
