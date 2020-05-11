@@ -2,7 +2,7 @@ const { auth, db } = require('../firebase');
 
 //loop through hamsters and give five top/ bottom according to parameter
 
-async function getChart(symbol) {
+async function getChart(parameter) {
     let database = await db.collection('hamsters').get();
     let allHamsters = [] ;
 
@@ -11,7 +11,7 @@ async function getChart(symbol) {
         })
 
     try {
-        if (symbol === '+') {
+        if (parameter === 'top') {
             let chart = await allHamsters.sort(function (a, b) { //Sort array in descending order from most winning hamster
                 return b.wins - a.wins;
             });
@@ -20,7 +20,7 @@ async function getChart(symbol) {
         
             return winners;
 
-        } else if (symbol === '-') {
+        } else if (parameter === 'bottom') {
             let chart = await allHamsters.sort(function (a, b) { //Sort array in descending order from most losing hamster
                 return b.defeats - a.defeats;
             });
