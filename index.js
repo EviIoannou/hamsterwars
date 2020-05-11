@@ -15,8 +15,8 @@ app.use('/games', gamesRoute);
 const hamstersRoute = require('./routes/hamsters');
 app.use('/hamsters', hamstersRoute);
 
-// const statsRoute = require('./routes/stats');
-// app.use('/stats', statsRoute);
+const statsRoute = require('./routes/stats');
+app.use('/stats', statsRoute);
 
 //App listening to port 3000
 app.listen(3000, () => {
