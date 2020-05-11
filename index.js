@@ -6,8 +6,8 @@ app.use(express.json());
 
 //Require routes
 
-// const chartsRoute = require('./routes/charts');
-// app.use('/charts', chartsRoute);
+const chartsRoute = require('./routes/charts');
+app.use('/charts', chartsRoute);
 
 const gamesRoute = require('./routes/games');
 app.use('/games', gamesRoute);

@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
             //if player two is same as player one, get another random player
             playerTwo = getRandomPlayer();
         }
-    } else { //else request sepcific players in JSON body using their id 1-40
+    } else { //else request specific players in JSON body using their id 1-40
         playerOne = await getPlayer(req.body.playerOne);
         playerTwo = await getPlayer(req.body.playerTwo);
     }
