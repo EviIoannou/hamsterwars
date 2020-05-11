@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { auth, db } = require('./../firebase');
-const { createId, getTimestamp, getRandomPlayer, getPlayer } = require('../modules/gameFunctions');
+const { createId, getTimestamp, getRandomPlayer, getPlayer, getWinner } = require('../modules/gameFunctions');
 
 const router = new Router();
 
@@ -11,6 +11,8 @@ router.post('/', async (req, res) => {
     let id = createId(4);
     let playerOne = "";
     let playerTwo = "";
+    let contestants = [];
+    let winner = "";
 
     if (Object.keys(req.body).length === 0) { // if user does not choose any players, get two random players
 
@@ -25,20 +27,28 @@ router.post('/', async (req, res) => {
         playerTwo = await getPlayer(req.body.playerTwo);
     }
 
+    await contestants.push(playerOne);
+    await contestants.push(playerTwo);
+    winner = await getWinner(contestants);
 
     //Save the game in a 'games' collection
     await db.collection('games').doc(id).set({
+        id: id,
         timeStamp: getTimestamp(), //function to get today's timestamp
-        contestants: [playerOne, playerTwo]
+        contestants: [playerOne, playerTwo],
+        winner: winner
     })
 
     let game = await db.collection('games').doc(id).get();
     let gameData = game.data();
-    console.log(gameData);
+    
 
     res.send({
         msg: `Game ${id} between ${playerOne.name} and ${playerTwo.name} is on! `,
-        game: gameData
+        id: gameData.id,
+        timeStamp: gameData.timeStamp,
+        contestants: gameData.contestants,
+        winner: gameData.winner
     })
 
 })
