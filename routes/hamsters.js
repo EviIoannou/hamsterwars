@@ -63,7 +63,7 @@ router.get('/:id', async(req, res) => {
     }
 })
 
-//PUT > Update hamster data
+//PUT > Update hamster data manually with requested number of wins, defeats and games
 router.put('/:id/result', async (req, res) => {
     let docRef = await db.collection('hamsters').where("id", "==", req.params.id*1).get();
     

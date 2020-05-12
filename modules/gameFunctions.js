@@ -1,3 +1,4 @@
+
 const { auth, db } = require('../firebase');
 
 function createId(length) {
@@ -67,6 +68,25 @@ async function getWinner(array) { //will choose a random winner among contestant
     }
 }
 
+    //Update hamster data for winner and loser
+    async function updateData(id, wins, defeats){
+        console.log('Start update.')
+     
+        let docRef = await db.collection('hamsters').where("id", "==", id*1).get();
+        
+        docRef.forEach(doc =>{
+            let hamster = doc.data()
+            hamster.wins += wins,
+            hamster.defeats += defeats,
+            hamster.games ++
+    
+            db.collection('hamsters').doc(doc.id).update(hamster)
+            console.log(`Hamster ${id} updated. Total wins: ${hamster.wins}, total defeats:${hamster.defeats}, total games: ${hamster.games}.`)
+        })
+
+    }
+    
+
 function getTimestamp (){
     //get current date for the timestamp
     let today = new Date();
@@ -77,4 +97,4 @@ function getTimestamp (){
     let date = day + '/' + month + '/' + year;
     return date;
 }
-module.exports = { createId, getTimestamp, getRandomPlayer, getPlayer, getWinner }
+module.exports = { createId, getTimestamp, getRandomPlayer, getPlayer, getWinner, updateData }

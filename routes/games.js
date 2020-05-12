@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const { auth, db } = require('./../firebase');
-const { createId, getTimestamp, getRandomPlayer, getPlayer, getWinner } = require('../modules/gameFunctions');
+const { createId, getTimestamp, getRandomPlayer, getPlayer, getWinner, updateData } = 
+require('../modules/gameFunctions');
 
 const router = new Router();
-
-//POST a new hamaster war!
+//POST a new hamster war!
 router.post('/', async (req, res) => {
 
     //give each match an id
@@ -13,6 +13,7 @@ router.post('/', async (req, res) => {
     let playerTwo = "";
     let contestants = [];
     let winner = "";
+    let loser = "";
 
     if (Object.keys(req.body).length === 0) { // if user does not choose any players, get two random players
 
@@ -30,7 +31,25 @@ router.post('/', async (req, res) => {
     await contestants.push(playerOne);
     await contestants.push(playerTwo);
     winner = await getWinner(contestants);
+    let winnerId = winner.id;
 
+    if (winnerId === playerOne.id){
+        loser = playerTwo
+        console.log(loser)
+    } else if (winnerId === playerTwo.id){
+        loser = playerOne
+        console.log(loser)
+    }
+
+    let loserId = loser.id;
+
+   //update contestants' data with a function from the module gameFunctions
+    await updateData(winnerId, 1, 0);
+    await updateData(loserId, 0, 1);
+    
+    // get winner data again (updated)
+    winner = await getPlayer(winnerId) 
+    
     //Save the game in a 'games' collection
     await db.collection('games').doc(id).set({
         id: id,
@@ -50,8 +69,7 @@ router.post('/', async (req, res) => {
         contestants: gameData.contestants,
         winner: gameData.winner
     })
-
-})
+ })
 
 //GET all games data
 router.get('/', async (req, res) => {
@@ -62,11 +80,11 @@ router.get('/', async (req, res) => {
        snapShot.forEach(game => {
         console.log(game.data())
         games.push(game.data())
-    })
-    res.send(
-        {games: games}
-    );
-  
+        })
+        res.send(
+            {games: games}
+        );
+    
     }
    catch(err){
        console.error(err)
