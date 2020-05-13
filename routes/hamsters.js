@@ -63,22 +63,23 @@ router.get('/:id', async(req, res) => {
     }
 })
 
-//PUT > Update hamster data manually with requested number of wins, defeats and games
-router.put('/:id/result', async (req, res) => {
-    let docRef = await db.collection('hamsters').where("id", "==", req.params.id*1).get();
+//PUT > Update hamster data manually with requested number of wins, defeats and games; maybe will be used later in FronteEnd project
+// router.put('/:id/result', async (req, res) => {
+//     let docRef = await db.collection('hamsters').where("id", "==", req.params.id*1).get();
     
-    docRef.forEach(doc =>{
-        let hamster = doc.data()
-        hamster.wins += req.body.wins,
-        hamster.defeats += req.body.defeats,
-        hamster.games += req.body.games
+//     docRef.forEach(doc =>{
+//         let hamster = doc.data()
+//         hamster.wins += req.body.wins,
+//         hamster.defeats += req.body.defeats,
+//         hamster.games += req.body.wins + req.body.defeats
 
-        db.collection('hamsters').doc(doc.id).update(hamster)
-        .then(res.send(
-        { msg: `Hamster updated. Total wins: ${hamster.wins}, total defeats:${hamster.defeats}, total games: ${hamster.games}.` }
-        ))
-    })
+//         db.collection('hamsters').doc(doc.id).update(hamster)
+//         .then(res.send(
+//         { msg: `Hamster updated. Total wins: ${hamster.wins}, total defeats:${hamster.defeats}, total games: ${hamster.games}.` }
+//         ))
+//     })
 
-})
+// })
+
 
 module.exports = router ; 

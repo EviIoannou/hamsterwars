@@ -1,45 +1,31 @@
 const { Router } = require('express');
 const { auth, db } = require('./../firebase');
-const { createId, getTimestamp, getRandomPlayer, getPlayer, getWinner, updateData } = 
+const { createId, getTimestamp, getPlayer, getWinner, updateData } = 
 require('../modules/gameFunctions');
 
 const router = new Router();
+
 //POST a new hamster war!
 router.post('/', async (req, res) => {
 
     //give each match an id
     let id = createId(4);
-    let playerOne = "";
-    let playerTwo = "";
-    let contestants = [];
+    let contestants = [req.body.contestants]; // this array will include two hamster objects from firestore
     let winner = "";
     let loser = "";
 
-    if (Object.keys(req.body).length === 0) { // if user does not choose any players, get two random players
-
-        playerOne = await getRandomPlayer();
-        playerTwo = await getRandomPlayer();
-        if (playerTwo === playerOne) {
-            //if player two is same as player one, get another random player
-            playerTwo = getRandomPlayer();
-        }
-    } else { //else request specific players in JSON body using their id 1-40
-        playerOne = await getPlayer(req.body.playerOne);
-        playerTwo = await getPlayer(req.body.playerTwo);
-    }
-
-    await contestants.push(playerOne);
-    await contestants.push(playerTwo);
-    winner = await getWinner(contestants);
+    winner = await getWinner(req.body.winner); //choose a player id; this player is the winner
     let winnerId = winner.id;
 
-    if (winnerId === playerOne.id){
+    //scenario for two contestants
+    if (winnerId === contestants[0].id){
         loser = playerTwo
-        console.log(loser)
-    } else if (winnerId === playerTwo.id){
+    } 
+    
+    else if (winnerId === contestants[1].id){
         loser = playerOne
-        console.log(loser)
     }
+    
 
     let loserId = loser.id;
 
@@ -54,7 +40,7 @@ router.post('/', async (req, res) => {
     await db.collection('games').doc(id).set({
         id: id,
         timeStamp: getTimestamp(), //function to get today's timestamp
-        contestants: [playerOne, playerTwo],
+        contestants: contestants,
         winner: winner
     })
 
