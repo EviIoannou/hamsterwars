@@ -9,7 +9,8 @@ const router = new Router();
 router.post('/', async (req, res) => {
 
     let id = createId(4); // give each match an id
-    let contestants = [req.body.contestants]; // this array will include hamster objects from firestore
+    let contestants = req.body.contestants; // this array will include hamster objects from firestore
+    console.log(contestants)
     let winner = "";
     let losers = [];
     winner = await getWinner(req.body.winner); //choose a player id; this player is the winner
@@ -17,15 +18,21 @@ router.post('/', async (req, res) => {
 
     //losers can be more than one, if contestants are more than two
     contestants.forEach(contestant => {
-        if (contestant.id != winnerId){ //loop through contestants; if id different than the winner's => contestant has lost
+        try{
+          if (contestant.id != winnerId){ //loop through contestants; if id different than the winner's => contestant has lost
             losers.push(contestant);
+
+        }  
+        }
+        catch(err){
+            console.error("error:" + err)
         }
     })
- 
+
    //update contestants' data with a function from the module gameFunctions
     await updateData(winnerId, 1, 0);
     losers.forEach(loser =>{ //update each defeated hamster
-      await updateData(loser.id, 0, 1);  
+      updateData(loser.id, 0, 1);  
     })
     
     // get winner data again (updated)
@@ -43,7 +50,7 @@ router.post('/', async (req, res) => {
     let gameData = game.data();
     
     res.send({
-        msg: `Game ${id} between ${playerOne.name} and ${playerTwo.name} is on! `,
+        msg: `Game ${id} is on! `,
         id: gameData.id,
         timeStamp: gameData.timeStamp,
         contestants: gameData.contestants,
