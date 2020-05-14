@@ -12,6 +12,7 @@ router.post('/', async (req, res) => {
     let contestants = req.body.contestants; // this array will include hamster objects from firestore
     let winner = "";
     let losers = [];
+    
     winner = await getWinner(req.body.winner); //choose a player id; this player is the winner
     let winnerId = winner.id;
 
