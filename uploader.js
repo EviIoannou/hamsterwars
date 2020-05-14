@@ -6,7 +6,7 @@ require("firebase/firestore");
 
 // Initialize Cloud Firestore through Firebase
 firebase.initializeApp({
-
+  //apiKey here
   authDomain: "hamsterwars-64a0f.firebaseapp.com",
   databaseURL: "https://hamsterwars-64a0f.firebaseio.com",
   projectId: "hamsterwars-64a0f",
